@@ -87,9 +87,8 @@ struct proc
     char name[16];              // Process name (debugging)
 
     /////// your code here///////
-    // TODO: Add numtickets
-    // add numtickest here
-    // add numticks here
+    int numtickets; // Number of tickets the process has
+    int numticks;   // Number of ticks the process has
     /////////////////////////////
 };
 
