@@ -6,12 +6,11 @@
 #include "proc.h"
 #include "sysfunc.h"
 
-int counter=0;
+int counter = 0;
 
-int
-sys_fork(void)
+int sys_fork(void)
 {
-  return fork();
+    return fork();
 }
 
 //////////// your code here  /////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -20,12 +19,12 @@ sys_fork(void)
 ///  because you are calling assigntickets(ticketsGotIt) which is define in proc.c you have to update defs.h with this new system call
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // HERE THE PROTOTYPE
-//int sys_assigntickets(void)
+// int sys_assigntickets(void)
 //{
 //	int ticketsGotIt
 //	if (argint(0, &ticketsGotIt) < 0)  //this is the way to pass an integer as a parameters in sysproc.c, will pass this tickets in the experiment
 //	{
-//		return -1;  //validation line	
+//		return -1;  //validation line
 //	}
 //	else{
 //		return assigntickets(ticketsGotIt); //assigntickets big implementation is in pro.c
@@ -33,104 +32,100 @@ sys_fork(void)
 //}
 //////////// your code here  /////////////////////////////////////////////////////////////////////////////////////////////////////
 /////we use this system call for filling out the arrays of pstat data structure
-/////So, remember to include here the pstat.h header file 
+/////So, remember to include here the pstat.h header file
 ///  because you are calling assigntickets(ticketsGotIt) which is define in proc.c you have to update defs.h with this new system call
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-//int sys_saveData(void)
+// int sys_saveData(void)
 //{
 //	struct pstat *pTable; //create a pointer able to point to objects of the type pstat//
 //	if(argptr(0, (void *)&pTable, sizeof(*pTable)) < 0){ //this is the way to pass a pointer to an object as a parameter in sysproc.c, will pass this tickets in the experiment
 //		return -1;  //validation
 //	}
-//	if(pInfo == NULL){  //validation 
+//	if(pInfo == NULL){  //validation
 //		return -1;
-//	}			
-//	saveData(pTable);  //call the getpinf() in proc.c 		
+//	}
+//	saveData(pTable);  //call the getpinf() in proc.c
 //	return 0;
-//}
+// }
 //////////////////////////////////////////////////////
-	
-	int
-sys_exit(void)
-	
+
+int sys_exit(void)
+
 {
-  exit();
-  return 0;  // not reached
+    exit();
+    return 0; // not reached
 }
 
-int
-sys_wait(void)
+int sys_wait(void)
 {
-  return wait();
+    return wait();
 }
 
-int
-sys_kill(void)
+int sys_kill(void)
 {
-  int pid;
+    int pid;
 
-  if(argint(0, &pid) < 0)
-    return -1;
-  return kill(pid);
+    if (argint(0, &pid) < 0)
+        return -1;
+    return kill(pid);
 }
-int
-sys_cluis(void)
+int sys_cluis(void)
 {
-  return counter;
+    return counter;
 }
 
-int
-sys_getpid(void)
-{ 
-  counter = counter +1;
-  return proc->pid;
+int sys_getpid(void)
+{
+    counter = counter + 1;
+    return proc->pid;
 }
 
-int
-sys_sbrk(void)
+int sys_sbrk(void)
 {
-  int addr;
-  int n;
+    int addr;
+    int n;
 
-  if(argint(0, &n) < 0)
-    return -1;
-  addr = proc->sz;
-  if(growproc(n) < 0)
-    return -1;
-  return addr;
+    if (argint(0, &n) < 0)
+        return -1;
+    addr = proc->sz;
+    if (growproc(n) < 0)
+        return -1;
+    return addr;
 }
 
-int
-sys_sleep(void)
+int sys_sleep(void)
 {
-  int n;
-  uint ticks0;
-  
-  if(argint(0, &n) < 0)
-    return -1;
-  acquire(&tickslock);
-  ticks0 = ticks;
-  while(ticks - ticks0 < n){
-    if(proc->killed){
-      release(&tickslock);
-      return -1;
+    int n;
+    uint ticks0;
+
+    if (argint(0, &n) < 0)
+        return -1;
+    acquire(&tickslock);
+    ticks0 = ticks;
+    while (ticks - ticks0 < n)
+    {
+        if (proc->killed)
+        {
+            release(&tickslock);
+            return -1;
+        }
+        sleep(&ticks, &tickslock);
     }
-    sleep(&ticks, &tickslock);
-  }
-  release(&tickslock);
-  return 0;
+    release(&tickslock);
+    return 0;
 }
 
 // return how many clock tick interrupts have occurred
 // since boot.
-int
-sys_uptime(void)
+int sys_uptime(void)
 {
-  uint xticks;
-  
-  acquire(&tickslock);
-  xticks = ticks;
-  release(&tickslock);
-  return xticks;
+    uint xticks;
+
+    acquire(&tickslock);
+    xticks = ticks;
+    release(&tickslock);
+    return xticks;
 }
+
+// TODO: Add syscall implementation

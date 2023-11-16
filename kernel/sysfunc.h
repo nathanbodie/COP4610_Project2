@@ -25,4 +25,6 @@ int sys_write(void);
 int sys_uptime(void);
 int sys_luic(void);
 
+// TODO: File needs modification
+
 #endif // _SYSFUNC_H_
