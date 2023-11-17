@@ -23,7 +23,7 @@ int sys_unlink(void);
 int sys_wait(void);
 int sys_write(void);
 int sys_uptime(void);
-int sys_luic(void);
+int sys_cluis(void);
 
 // TODO: File needs modification
 
