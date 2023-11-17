@@ -41,6 +41,8 @@ void *malloc(uint);
 void free(void *);
 int atoi(const char *);
 
-// TODO: Add user functions
+// New user functions
+int settickets(int *);
+int getpinfo(struct pstat *);
 
 #endif // _USER_H_

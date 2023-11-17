@@ -327,13 +327,15 @@ void scheduler(void)
 ////Assign the tickets passed by the user to variable number of tickets of the process,
 /// check the name of this variable in proc.h
 ///////////////////////////////////////////////////////////////////////////////////////
-// int assigntickets(int passTickets)
-//{
-// make validation here, if you want
+int settickets(int number)
+{
+    // make validation here, if you want
+    if (number < 1)
+        return -1;
 
-//	proc->variable ticket of the process  = passTickets;
-//	return 0;
-//}
+    proc->numtickets = number; // ticket of the process  = number;
+    return 0;
+}
 ////////////////////////////////////////////////////////////////
 
 /////////////// your code here  second system call //////////////////////////////////////////////////////

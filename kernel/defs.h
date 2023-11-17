@@ -170,8 +170,12 @@ void switchuvm(struct proc *);
 void switchkvm(void);
 int copyout(pde_t *, uint, void *, uint);
 
-// tickettest.c
-// TODO: Add syscall here
+// TODO: Check declaration
+//  tickettest.c
+int settickets(int number);
+
+// ps.c
+int getpinfo(struct pstat *);
 
 // number of elements in fixed-size array
 #define NELEM(x) (sizeof(x) / sizeof((x)[0]))
