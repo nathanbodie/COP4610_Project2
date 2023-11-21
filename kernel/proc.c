@@ -1,3 +1,5 @@
+#include <time.h>
+
 #include "types.h"
 #include "defs.h"
 #include "param.h"
@@ -45,6 +47,9 @@ allocproc(void)
 found:
     p->state = EMBRYO;
     p->pid = nextpid++;
+
+    p->numticks = 0;
+    p->numtickets = 1;
 
     /////// your code here//////////////////////////////
     // initialize for all process the variable for number of tickets that you define in proc.h equal to 1
@@ -159,6 +164,8 @@ int fork(void)
     // Clear %eax so that fork returns 0 in the child.
     np->tf->eax = 0;
 
+    np->numtickets = proc->numtickets;
+
     for (i = 0; i < NOFILE; i++)
         if (proc->ofile[i])
             np->ofile[i] = filedup(proc->ofile[i]);
@@ -169,6 +176,7 @@ int fork(void)
     // proc is current process (i.e. parent)
     /// np->number of tickets  = something like the parent -> number of tickets
     /// get the exact the name fo number of tickets from proc.h the parent from the previous comment or some lines above
+    np->numtickets = np->parent->numtickets;
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     pid = np->pid;
@@ -286,8 +294,8 @@ void scheduler(void)
 
         ////your code here  add variables///////////
         // add variable for the winner of the lotery
-        //  int lotteryWinner =0;
-        //  int totaltickets =0;
+        int lotteryWinner = 0;
+        int totalTickets = 0;
         // add any other variable you need for program
         /////////////////////////////////////////////
 
@@ -296,7 +304,9 @@ void scheduler(void)
         //////you can use it at any place //////////////////
         /// compute thetotalTickets
         // call your random number generator ///
-        // int lotteryWinner = rand() % totalTickets + 1;
+        time_t t;
+        srand((unsigned)time(&t));
+        int lotteryWinner = rand() % totalTickets + 1;
         //////////////////////////////////////////////
 
         // Loop over process table looking for process to run.

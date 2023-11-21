@@ -128,4 +128,8 @@ int sys_uptime(void)
     return xticks;
 }
 
-// TODO: Add syscall implementation
+// TODO: Check syscall implementation
+int sys_settickets(int number)
+{
+    return settickets(number);
+}

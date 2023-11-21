@@ -25,6 +25,8 @@ int sys_write(void);
 int sys_uptime(void);
 int sys_cluis(void);
 
-// TODO: File needs modification
+// New calls
+int sys_settickets(int number);
+int sys_getpinfo(struct pstat *);
 
 #endif // _SYSFUNC_H_

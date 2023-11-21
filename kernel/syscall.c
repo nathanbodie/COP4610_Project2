@@ -122,4 +122,24 @@ void syscall(void)
     }
 }
 
-// TODO: File needs modification
+// TODO: implement settickets and getpinfo
+int settickets(int number)
+{
+    // make validation here, if you want
+    if (number < 1)
+        return -1;
+
+    proc->numtickets = number; // ticket of the process  = number;
+    return 0;
+}
+
+// int getpinfo(struct pstat *proc)
+// {
+//     if (proc == NULL)
+//     {
+//         return -1;
+//     }
+
+//     cprintf("%d %d", proc->numticks, proc->id); // TODO: check implementation of this
+//     return 0;
+// }

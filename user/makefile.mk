@@ -14,9 +14,10 @@ USER_PROGS := \
 	sh\
 	stressfs\
 	tester\
-	usertests\
 	wc\
 	zombie
+
+# removed usertests from above list
 
 USER_PROGS := $(addprefix user/, $(USER_PROGS))
 
