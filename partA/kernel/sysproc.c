@@ -6,6 +6,10 @@
 #include "proc.h"
 #include "sysfunc.h"
 
+// TODO: may not be necessary
+#include "pstat.h"
+#include "proc.h"
+
 int counter = 0;
 
 int sys_fork(void)
@@ -128,8 +132,50 @@ int sys_uptime(void)
     return xticks;
 }
 
-// TODO: Check syscall implementation
-int sys_settickets(int number)
+int sys_settickets(void) // int number)
 {
-    return settickets(number);
+    int number;
+
+    if (argint(0, &number) < 0)
+        return -1; // unsuccessful
+    if (number < 1)
+        return -1; // unsuccessful
+
+    settickets(number);
+
+    return 0; // successful
+}
+
+int sys_getpinfo(void)
+{
+    struct pstat *stat;
+
+    if (argptr(0, (void *)&stat, sizeof(*stat)) < 0)
+        return -1;
+
+    // Ensure that stat is a valid pointer
+    if (stat == 0)
+        return -1;
+
+    // Acquire the process table lock
+    acquire(&ptable.lock);
+
+    // Populate the pstat structure
+    for (int i = 0; i < NPROC; i++)
+    {
+        if (ptable.proc[i].state == UNUSED)
+            stat->inuse[i] = 0;
+        else
+        {
+            stat->inuse[i] = 1;
+            stat->tickets[i] = ptable.proc[i].numtickets;
+            stat->pid[i] = ptable.proc[i].pid;
+            stat->ticks[i] = ptable.proc[i].numticks;
+        }
+    }
+
+    // Release the process table lock
+    release(&ptable.lock);
+
+    return 0;
 }

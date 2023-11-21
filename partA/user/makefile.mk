@@ -15,7 +15,8 @@ USER_PROGS := \
 	stressfs\
 	tester\
 	wc\
-	zombie
+	zombie\
+	tickettest
 
 # removed usertests from above list
 

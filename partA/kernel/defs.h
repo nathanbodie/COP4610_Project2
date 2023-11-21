@@ -1,5 +1,6 @@
 #ifndef _DEFS_H_
 #define _DEFS_H_
+#include "pstat.h"
 
 struct buf;
 struct context;
@@ -111,6 +112,7 @@ void wakeup(void *);
 void yield(void);
 
 int settickets(int number);
+int getpinfo(struct pstat *stat);
 
 // swtch.S
 void swtch(struct context **, struct context *);
@@ -170,9 +172,6 @@ pde_t *copyuvm(pde_t *, uint);
 void switchuvm(struct proc *);
 void switchkvm(void);
 int copyout(pde_t *, uint, void *, uint);
-
-// ps.c
-// int getpinfo(struct pstat *);
 
 // number of elements in fixed-size array
 #define NELEM(x) (sizeof(x) / sizeof((x)[0]))

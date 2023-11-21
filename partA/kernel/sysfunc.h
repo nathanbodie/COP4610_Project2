@@ -28,7 +28,7 @@ int sys_uptime(void);
 int sys_cluis(void);
 
 // New calls
-int sys_settickets(int number);
-int sys_getpinfo(struct pstat *);
+int sys_settickets(void);
+int sys_getpinfo(void);
 
 #endif // _SYSFUNC_H_

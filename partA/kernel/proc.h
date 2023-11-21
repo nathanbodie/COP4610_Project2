@@ -1,5 +1,6 @@
 #ifndef _PROC_H_
 #define _PROC_H_
+#include "spinlock.h"
 // Segments in proc->gdt.
 // Also known to bootasm.S and trapasm.S
 #define SEG_KCODE 1 // kernel code
@@ -97,5 +98,11 @@ struct proc
 //   original data and bss
 //   fixed-size stack
 //   expandable heap
+
+extern struct proc_table
+{
+    struct spinlock lock;
+    struct proc proc[NPROC];
+} ptable;
 
 #endif // _PROC_H_

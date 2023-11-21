@@ -18,11 +18,7 @@ int rand(void)
     return rseed = (rseed * SCHRAND_MULT + SCHRAND_CONST) % SCHRAND_MAX;
 }
 
-struct
-{
-    struct spinlock lock;
-    struct proc proc[NPROC];
-} ptable;
+struct proc_table ptable;
 
 static struct proc *initproc;
 
@@ -341,42 +337,53 @@ void scheduler(void)
     for (;;)
     {
         // Enable interrupts on this processor.
-
-        ////your code here  add variables///////////
-        // add variable for the winner of the lotery
-        //  int lotteryWinner =0;
-        //  int totaltickets =0;
-        // add any other variable you need for program
-        /////////////////////////////////////////////
-
         sti();
 
-        //////you can use it at any place //////////////////
-        /// compute thetotalTickets
-        // call your random number generator ///
-        // int lotteryWinner = rand() % totalTickets + 1;
-        //////////////////////////////////////////////
+        // Variables for the lottery scheduler
+        int totalTickets = 0;
+        int lotteryWinner = 0;
+        int chosenTicket = 0;
 
-        // Loop over process table looking for process to run.
+        // Loop over process table to calculate total tickets
         acquire(&ptable.lock);
         for (p = ptable.proc; p < &ptable.proc[NPROC]; p++)
         {
             if (p->state != RUNNABLE)
                 continue;
 
-            // Switch to chosen process.  It is the process's job
-            // to release ptable.lock and then reacquire it
-            // before jumping back to us.
-            proc = p;
-            switchuvm(p);
-            p->state = RUNNING;
-            swtch(&cpu->scheduler, proc->context);
-            switchkvm();
-
-            // Process is done running for now.
-            // It should have changed its p->state before coming back.
-            proc = 0;
+            totalTickets += p->numtickets;
         }
+
+        if (totalTickets > 0)
+        {
+            // Generate a random number to select the winner
+            lotteryWinner = rand() % totalTickets + 1;
+
+            // Loop over process table to find the winner
+            for (p = ptable.proc; p < &ptable.proc[NPROC]; p++)
+            {
+                if (p->state != RUNNABLE)
+                    continue;
+
+                chosenTicket += p->numtickets;
+
+                if (chosenTicket >= lotteryWinner)
+                {
+                    // Switch to chosen process.
+                    proc = p;
+                    switchuvm(p);
+                    p->state = RUNNING;
+                    swtch(&cpu->scheduler, proc->context);
+                    switchkvm();
+
+                    // Process is done running for now.
+                    // It should have changed its p->state before coming back.
+                    proc = 0;
+                    break;
+                }
+            }
+        }
+
         release(&ptable.lock);
     }
 }
@@ -403,7 +410,7 @@ int settickets(int number)
 // READ THE ELEMENTS OF PSTAT IN THE DESCRIPTION OF THE PROJECT TO MAKE SENSE OF THISsaveInfo(
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-int getpinfo(struct pstat *table) // create a pointer able to point to object of the tpe pstat
+int getpinfo(struct pstat *stat) // create a pointer able to point to object of the tpe pstat
 {
     struct proc *p;                                     // Create a pointer able to point to objects of the type proc (process)
     int i = 0;                                          // used to iterate througt the slots of the arrays in pstat
@@ -417,16 +424,16 @@ int getpinfo(struct pstat *table) // create a pointer able to point to object of
 
         if (p->state == UNUSED)
         {
-            table->inuse[i] = 0; // check the name of the arrays in pstat.
+            stat->inuse[i] = 0; // check the name of the arrays in pstat.
         }
         else
         {
-            table->inuse[i] = 1;
+            stat->inuse[i] = 1;
         }
 
-        table->pid[i] = p->pid;            // with the pid of the process p->
-        table->tickets[i] = p->numtickets; // with the number of ti
-        table->ticks[i] = p->numticks;     // with the number of time the process has runned in the cpu
+        stat->pid[i] = p->pid;            // with the pid of the process p->
+        stat->tickets[i] = p->numtickets; // with the number of ti
+        stat->ticks[i] = p->numticks;     // with the number of time the process has runned in the cpu
         i++;
     }
     release(&ptable.lock);

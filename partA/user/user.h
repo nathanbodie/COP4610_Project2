@@ -1,3 +1,5 @@
+#include "pstat.h"
+
 #ifndef _USER_H_
 #define _USER_H_
 
@@ -42,7 +44,7 @@ void free(void *);
 int atoi(const char *);
 
 // New user functions
-// int settickets(int *);
-// int getpinfo(struct pstat *);
+int settickets(int number);
+int getpinfo(struct pstat *stat);
 
 #endif // _USER_H_
