@@ -281,40 +281,87 @@ int wait(void)
 //  - swtch to start running that process
 //  - eventually that process transfers control
 //      via swtch back to the scheduler.
+// void scheduler(void)
+// {
+//     struct proc *p;
+//     int lotteryWinner;
+
+//     for (;;)
+//     {
+//         int passedTickets = 0;
+//         int totalTickets = 0;
+//         lotteryWinner = 0;
+
+//         sti();
+
+//         // Loop over process table looking for process to run.
+//         acquire(&ptable.lock);
+//         for (p = ptable.proc; p < &ptable.proc[NPROC]; p++)
+//         {
+//             if (p->state != RUNNABLE)
+//                 continue;
+//             totalTickets += p->numtickets;
+//         }
+//         release(&ptable.lock);
+
+//         lotteryWinner = rand() % totalTickets + 1;
+
+//         acquire(&ptable.lock);
+//         for (p = ptable.proc; p < &ptable.proc[NPROC]; p++)
+//         {
+//             if (p->state != RUNNABLE)
+//                 continue;
+
+//             passedTickets += p->numtickets;
+
+//             if (passedTickets < lotteryWinner)
+//                 continue;
+
+//             // Switch to chosen process.  It is the process's job
+//             // to release ptable.lock and then reacquire it
+//             // before jumping back to us.
+//             proc = p;
+//             switchuvm(p);
+//             p->state = RUNNING;
+//             swtch(&cpu->scheduler, proc->context);
+//             switchkvm();
+
+//             // Process is done running for now.
+//             // It should have changed its p->state before coming back.
+//             proc = 0;
+//         }
+//         release(&ptable.lock);
+//     }
+// }
+
 void scheduler(void)
 {
     struct proc *p;
-    int lotteryWinner;
 
     for (;;)
     {
-        int passedTickets = 0;
-        int totalTickets = 0;
-        lotteryWinner = 0;
+        // Enable interrupts on this processor.
+
+        ////your code here  add variables///////////
+        // add variable for the winner of the lotery
+        //  int lotteryWinner =0;
+        //  int totaltickets =0;
+        // add any other variable you need for program
+        /////////////////////////////////////////////
 
         sti();
+
+        //////you can use it at any place //////////////////
+        /// compute thetotalTickets
+        // call your random number generator ///
+        // int lotteryWinner = rand() % totalTickets + 1;
+        //////////////////////////////////////////////
 
         // Loop over process table looking for process to run.
         acquire(&ptable.lock);
         for (p = ptable.proc; p < &ptable.proc[NPROC]; p++)
         {
             if (p->state != RUNNABLE)
-                continue;
-            totalTickets += p->numtickets;
-        }
-        release(&ptable.lock);
-
-        lotteryWinner = rand() % totalTickets + 1;
-
-        acquire(&ptable.lock);
-        for (p = ptable.proc; p < &ptable.proc[NPROC]; p++)
-        {
-            if (p->state != RUNNABLE)
-                continue;
-
-            passedTickets += p->numtickets;
-
-            if (passedTickets < lotteryWinner)
                 continue;
 
             // Switch to chosen process.  It is the process's job
