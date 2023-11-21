@@ -270,66 +270,6 @@ int wait(void)
     }
 }
 
-// Per-CPU process scheduler.
-// Each CPU calls scheduler() after setting itself up.
-// Scheduler never returns.  It loops, doing:
-//  - choose a process to run
-//  - swtch to start running that process
-//  - eventually that process transfers control
-//      via swtch back to the scheduler.
-// void scheduler(void)
-// {
-//     struct proc *p;
-//     int lotteryWinner;
-
-//     for (;;)
-//     {
-//         int passedTickets = 0;
-//         int totalTickets = 0;
-//         lotteryWinner = 0;
-
-//         sti();
-
-//         // Loop over process table looking for process to run.
-//         acquire(&ptable.lock);
-//         for (p = ptable.proc; p < &ptable.proc[NPROC]; p++)
-//         {
-//             if (p->state != RUNNABLE)
-//                 continue;
-//             totalTickets += p->numtickets;
-//         }
-//         release(&ptable.lock);
-
-//         lotteryWinner = rand() % totalTickets + 1;
-
-//         acquire(&ptable.lock);
-//         for (p = ptable.proc; p < &ptable.proc[NPROC]; p++)
-//         {
-//             if (p->state != RUNNABLE)
-//                 continue;
-
-//             passedTickets += p->numtickets;
-
-//             if (passedTickets < lotteryWinner)
-//                 continue;
-
-//             // Switch to chosen process.  It is the process's job
-//             // to release ptable.lock and then reacquire it
-//             // before jumping back to us.
-//             proc = p;
-//             switchuvm(p);
-//             p->state = RUNNING;
-//             swtch(&cpu->scheduler, proc->context);
-//             switchkvm();
-
-//             // Process is done running for now.
-//             // It should have changed its p->state before coming back.
-//             proc = 0;
-//         }
-//         release(&ptable.lock);
-//     }
-// }
-
 void scheduler(void)
 {
     struct proc *p;
