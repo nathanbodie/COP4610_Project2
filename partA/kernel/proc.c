@@ -306,6 +306,7 @@ void scheduler(void)
                     continue;
 
                 chosenTicket += p->numtickets;
+                p->numticks++;
 
                 if (chosenTicket >= lotteryWinner)
                 {
